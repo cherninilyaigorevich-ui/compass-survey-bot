@@ -1,6 +1,19 @@
 name: compass-survey-bot
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: compass-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
   postgres:
     image: postgres:17
     container_name: compass-postgres
