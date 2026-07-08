@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from fastapi import APIRouter
 
 from app.services.answers import get_answer_stats, get_answers, save_answer
@@ -11,6 +11,16 @@ class AnswerCreate(BaseModel):
     username: str | None = None
     answer: str
     location: str | None = None
+
+    @field_validator("answer")
+    @classmethod
+    def validate_answer(cls, value: str) -> str:
+        normalized = value.strip().lower()
+
+        if normalized not in ("yes", "no"):
+            raise ValueError("answer must be 'yes' or 'no'")
+
+        return normalized
 
 
 @router.post("")
