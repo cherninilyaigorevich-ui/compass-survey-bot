@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.api.answers import router as answers_router
 from app.api.health import router as health_router
 from app.database import create_tables
 
@@ -15,3 +16,4 @@ def on_startup():
 
 
 app.include_router(health_router)
+app.include_router(answers_router)
