@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from fastapi import APIRouter
 
-from app.services.answers import save_answer
+from app.services.answers import get_answer_stats, get_answers, save_answer
 
 router = APIRouter(prefix="/answers", tags=["answers"])
 
@@ -30,3 +30,25 @@ def create_answer(payload: AnswerCreate):
         "location": saved_answer.location,
         "created_at": saved_answer.created_at,
     }
+
+
+@router.get("")
+def list_answers():
+    answers = get_answers()
+
+    return [
+        {
+            "id": item.id,
+            "user_id": item.user_id,
+            "username": item.username,
+            "answer": item.answer,
+            "location": item.location,
+            "created_at": item.created_at,
+        }
+        for item in answers
+    ]
+
+
+@router.get("/stats")
+def stats():
+    return get_answer_stats()
