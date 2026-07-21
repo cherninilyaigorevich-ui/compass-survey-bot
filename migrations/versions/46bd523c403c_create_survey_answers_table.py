@@ -1,18 +1,18 @@
 """create survey answers table
 
 Revision ID: 46bd523c403c
-Revises: 
+Revises:
 Create Date: 2026-07-21 08:58:35.747744
 
 """
+
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = '46bd523c403c'
+revision: str = "46bd523c403c"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

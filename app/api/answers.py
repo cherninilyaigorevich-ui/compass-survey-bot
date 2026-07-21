@@ -1,6 +1,8 @@
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, field_validator
-from fastapi import APIRouter
+from sqlalchemy.orm import Session
 
+from app.dependencies import get_db
 from app.services.answers import get_answer_stats, get_answers, save_answer
 
 router = APIRouter(prefix="/answers", tags=["answers"])
@@ -24,8 +26,13 @@ class AnswerCreate(BaseModel):
 
 
 @router.post("")
-def create_answer(payload: AnswerCreate):
+def create_answer(
+    payload: AnswerCreate,
+    db: Session = Depends(get_db),
+):
+
     saved_answer = save_answer(
+        db=db,
         user_id=payload.user_id,
         username=payload.username,
         answer=payload.answer,
@@ -43,8 +50,11 @@ def create_answer(payload: AnswerCreate):
 
 
 @router.get("")
-def list_answers():
-    answers = get_answers()
+def list_answers(
+    db: Session = Depends(get_db),
+):
+
+    answers = get_answers(db)
 
     return [
         {
@@ -60,5 +70,7 @@ def list_answers():
 
 
 @router.get("/stats")
-def stats():
-    return get_answer_stats()
+def stats(
+    db: Session = Depends(get_db),
+):
+    return get_answer_stats(db)

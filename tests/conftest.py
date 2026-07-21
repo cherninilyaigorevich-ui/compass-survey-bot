@@ -6,7 +6,6 @@ import pytest
 from app.database import get_engine
 from app.models.survey_answer import Base
 
-
 os.environ["POSTGRES_DB"] = "compass_test"
 os.environ["POSTGRES_USER"] = "compass_test"
 os.environ["POSTGRES_PASSWORD"] = "test_password"

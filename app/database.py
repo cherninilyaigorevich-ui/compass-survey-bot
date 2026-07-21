@@ -4,17 +4,23 @@ from sqlalchemy.orm import sessionmaker
 from app.config import settings
 
 
-engine = create_engine(settings.database_url)
+def get_engine():
+    return create_engine(settings.database_url)
 
 
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
+def get_session_factory():
+    engine = get_engine()
+
+    return sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=engine,
+    )
 
 
 def check_database() -> bool:
+    engine = get_engine()
+
     with engine.connect() as connection:
         connection.execute(text("SELECT 1"))
 
