@@ -1,5 +1,6 @@
 FROM python:3.12-slim
 
+
 WORKDIR /app
 
 
@@ -15,6 +16,16 @@ COPY scripts ./scripts
 
 
 RUN chmod +x ./scripts/start.sh
+
+
+RUN useradd \
+    --create-home \
+    --shell /bin/bash \
+    appuser \
+    && chown -R appuser:appuser /app
+
+
+USER appuser
 
 
 CMD ["./scripts/start.sh"]
