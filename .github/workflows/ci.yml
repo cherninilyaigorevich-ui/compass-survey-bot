@@ -17,31 +17,26 @@ jobs:
     runs-on: ubuntu-latest
 
 
-    services:
-
-      postgres:
-
-        image: postgres:17
-
-        env:
-          POSTGRES_DB: compass_test
-          POSTGRES_USER: compass_test
-          POSTGRES_PASSWORD: test_password
-
-        ports:
-          - 5432:5432
-
-        options: >-
-          --health-cmd pg_isready -U compass_test -d compass_test
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-
     steps:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      - name: Start PostgreSQL
+        run: |
+          docker run -d \
+            --name compass-postgres-test \
+            -e POSTGRES_DB=compass_test \
+            -e POSTGRES_USER=compass_test \
+            -e POSTGRES_PASSWORD=test_password \
+            -p 5432:5432 \
+            postgres:17
+
+
+      - name: Wait PostgreSQL
+        run: |
+          sleep 10
 
 
       - name: Setup Python
@@ -60,7 +55,7 @@ jobs:
           ruff check .
 
 
-      - name: Run tests
+      - name: Run migrations and tests
         env:
           POSTGRES_DB: compass_test
           POSTGRES_USER: compass_test
