@@ -9,8 +9,13 @@ on:
     branches:
       - main
 
-
 jobs:
+
+  test:
+
+    permissions:
+      contents: read
+      packages: write
 
   test:
 
@@ -68,6 +73,18 @@ jobs:
           pytest
 
 
-      - name: Build Docker image
-        run: |
-          docker build -t compass-survey-bot:test .
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/compass-survey-bot:latest
+            ghcr.io/${{ github.repository_owner }}/compass-survey-bot:${{ github.sha }}
