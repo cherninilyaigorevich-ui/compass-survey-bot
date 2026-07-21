@@ -9,13 +9,12 @@ on:
     branches:
       - main
 
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-
-  test:
-
-    permissions:
-      contents: read
-      packages: write
 
   test:
 
