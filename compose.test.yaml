@@ -1,0 +1,41 @@
+name: compass-survey-bot-test
+
+services:
+
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    env_file:
+      - .env.test
+
+    depends_on:
+      - postgres-test
+
+    volumes:
+      - .:/app
+
+    command: pytest
+
+
+  postgres-test:
+    image: postgres:17
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: compass_test
+      POSTGRES_USER: compass_test
+      POSTGRES_PASSWORD: test_password
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+
+volumes:
+
+  postgres_test_data:
