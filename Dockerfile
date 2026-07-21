@@ -13,7 +13,8 @@ COPY app ./app
 COPY migrations ./migrations
 COPY alembic.ini .
 COPY scripts ./scripts
-
+COPY tests ./tests
+COPY pytest.ini .
 
 RUN chmod +x ./scripts/start.sh
 
