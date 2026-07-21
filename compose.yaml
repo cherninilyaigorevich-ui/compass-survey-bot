@@ -3,7 +3,7 @@ name: compass-survey-bot
 services:
 
   app:
-    image: ghcr.io/cherninilyaigorevich-ui/compass-survey-bot:latest
+    image: ${APP_IMAGE}
 
     container_name: compass-app
 
