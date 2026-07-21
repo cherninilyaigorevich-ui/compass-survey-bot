@@ -3,9 +3,7 @@ name: compass-survey-bot
 services:
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/cherninilyaigorevich-ui/compass-survey-bot:latest
 
     container_name: compass-app
 
