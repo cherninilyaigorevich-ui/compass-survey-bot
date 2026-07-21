@@ -11,8 +11,22 @@ services:
 
     restart: unless-stopped
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
     ports:
       - "8000:8000"
+
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+        reservations:
+          memory: 256M
 
     depends_on:
       postgres:
@@ -43,6 +57,19 @@ services:
 
     restart: unless-stopped
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+        reservations:
+          memory: 512M
 
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
