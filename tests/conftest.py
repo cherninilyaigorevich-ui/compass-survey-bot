@@ -6,12 +6,11 @@ import pytest
 from app.database import get_engine
 from app.models.survey_answer import Base
 
-os.environ["POSTGRES_DB"] = "compass_test"
-os.environ["POSTGRES_USER"] = "compass_test"
-os.environ["POSTGRES_PASSWORD"] = "test_password"
-os.environ["POSTGRES_HOST"] = "postgres-test"
-os.environ["POSTGRES_PORT"] = "5432"
-
+os.environ.setdefault("POSTGRES_DB", "compass_test")
+os.environ.setdefault("POSTGRES_USER", "compass_test")
+os.environ.setdefault("POSTGRES_PASSWORD", "test_password")
+os.environ.setdefault("POSTGRES_HOST", "localhost")
+os.environ.setdefault("POSTGRES_PORT", "5432")
 
 def pytest_sessionstart(session):
     """
