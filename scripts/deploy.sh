@@ -12,6 +12,25 @@ log() {
     printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
 }
 
+update_app_image() {
+    local image="$1"
+    local temporary_file
+
+    temporary_file="$(mktemp)"
+
+    sed "s|^APP_IMAGE=.*|APP_IMAGE=${image}|" \
+        "${ENV_FILE}" > "${temporary_file}"
+
+    if ! grep -q "^APP_IMAGE=${image}$" "${temporary_file}"; then
+        rm -f "${temporary_file}"
+        echo "Ошибка: не удалось обновить APP_IMAGE"
+        return 1
+    fi
+
+    cat "${temporary_file}" > "${ENV_FILE}"
+    rm -f "${temporary_file}"
+}
+
 if [[ $# -ne 1 ]]; then
     echo "Использование: $0 <полное имя Docker-образа>"
     echo "Пример: $0 ghcr.io/user/app:commit_sha"
@@ -49,21 +68,28 @@ log "Текущий образ: ${OLD_IMAGE}"
 log "Новый образ:   ${NEW_IMAGE}"
 
 rollback() {
+    local exit_code=$?
+
+    trap - ERR
+
     log "Деплой неуспешен. Выполняется откат на ${OLD_IMAGE}"
 
-    sed -i "s|^APP_IMAGE=.*|APP_IMAGE=${OLD_IMAGE}|" "${ENV_FILE}"
+    if update_app_image "${OLD_IMAGE}"; then
+        docker compose pull app || true
+        docker compose up -d --remove-orphans || true
+        log "Откат выполнен"
+    else
+        log "Ошибка: не удалось восстановить APP_IMAGE"
+    fi
 
-    docker compose pull app || true
-    docker compose up -d || true
-
-    log "Откат выполнен"
+    exit "${exit_code}"
 }
 
 trap rollback ERR
 
 log "Обновление APP_IMAGE"
 
-sed -i "s|^APP_IMAGE=.*|APP_IMAGE=${NEW_IMAGE}|" "${ENV_FILE}"
+update_app_image "${NEW_IMAGE}"
 
 log "Загрузка нового образа"
 
@@ -78,6 +104,7 @@ log "Ожидание готовности приложения"
 for attempt in $(seq 1 "${HEALTH_ATTEMPTS}"); do
     if curl --fail --silent --show-error "${HEALTH_URL}" >/dev/null; then
         log "Health check успешно пройден"
+
         trap - ERR
 
         log "Используемый образ:"
