@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api.answers import router as answers_router
+from app.api.compass import router as compass_router
 from app.api.health import router as health_router
 from app.config import settings
 from app.core.logging import setup_logging
@@ -15,11 +16,8 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     logger.info("%s started", settings.app_name)
-
     logger.info("Version: %s", settings.app_version)
-
     logger.info("Environment: %s", settings.environment)
 
     yield
@@ -33,6 +31,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
 app.include_router(health_router)
 app.include_router(answers_router)
+app.include_router(compass_router)
