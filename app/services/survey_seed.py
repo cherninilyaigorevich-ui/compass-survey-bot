@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from app.models.survey import Survey
 from app.models.survey_question import SurveyQuestion
 
-
 LOCATION_SURVEY_CODE = "location_check"
 
 

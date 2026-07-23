@@ -14,7 +14,6 @@ from app.core.logging import setup_logging
 from app.database import get_session_factory
 from app.services.survey_seed import seed_location_survey
 
-
 setup_logging()
 
 logger = logging.getLogger(__name__)

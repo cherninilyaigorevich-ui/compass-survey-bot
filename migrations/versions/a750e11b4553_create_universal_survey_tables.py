@@ -7,9 +7,8 @@ Create Date: 2026-07-22 13:26:53.292780
 
 from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # Идентификаторы миграции Alembic.
 revision: str = "a750e11b4553"
