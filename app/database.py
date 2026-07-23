@@ -1,25 +1,55 @@
+from collections.abc import Generator
+
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import settings
 
 
-def get_engine():
-    return create_engine(settings.database_url)
+engine: Engine = create_engine(
+    settings.database_url,
+    pool_pre_ping=True,
+)
+
+SessionLocal = sessionmaker(
+    bind=engine,
+    autocommit=False,
+    autoflush=False,
+    expire_on_commit=False,
+    class_=Session,
+)
 
 
-def get_session_factory():
-    engine = get_engine()
+def get_engine() -> Engine:
+    """Возвращает общий SQLAlchemy Engine приложения."""
 
-    return sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine,
-    )
+    return engine
+
+
+def get_session_factory() -> sessionmaker[Session]:
+    """Возвращает общую фабрику синхронных сессий."""
+
+    return SessionLocal
+
+
+def get_db() -> Generator[Session, None, None]:
+    """
+    FastAPI dependency для получения сессии БД.
+
+    Сессия автоматически закрывается после обработки запроса.
+    """
+
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 def check_database() -> bool:
-    engine = get_engine()
+    """Проверяет доступность PostgreSQL простым запросом SELECT 1."""
 
     with engine.connect() as connection:
         connection.execute(text("SELECT 1"))

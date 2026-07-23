@@ -13,9 +13,20 @@ class Settings(BaseSettings):
     postgres_host: str = "postgres"
     postgres_port: int = 5432
 
-    @property
-    def database_url(self):
+    compass_bot_token: str
+    compass_api_base_url: str = (
+        "https://userbot.getcompass.com/api/v3"
+    )
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
+    @property
+    def database_url(self) -> URL:
         return URL.create(
             drivername="postgresql+psycopg2",
             username=self.postgres_user,
@@ -24,9 +35,6 @@ class Settings(BaseSettings):
             port=self.postgres_port,
             database=self.postgres_db,
         )
-
-
-model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

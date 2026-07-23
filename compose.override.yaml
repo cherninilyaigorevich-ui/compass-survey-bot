@@ -2,3 +2,36 @@ services:
   app:
     volumes:
       - .:/app
+
+    networks:
+      - default
+      - proxy
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      # Основной публичный роутер
+      - "traefik.http.routers.compass.rule=Host(`compassbot.alisrv.com`)"
+      - "traefik.http.routers.compass.entrypoints=websecure"
+      - "traefik.http.routers.compass.tls=true"
+      - "traefik.http.routers.compass.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.compass.priority=1"
+      - "traefik.http.routers.compass.middlewares=security-headers@file,compression@file,rate-limit@file"
+      - "traefik.http.routers.compass.service=compass"
+
+      # Защищённая документация
+      - "traefik.http.routers.compass-docs.rule=Host(`compassbot.alisrv.com`) && (PathPrefix(`/docs`) || PathPrefix(`/redoc`) || Path(`/openapi.json`))"
+      - "traefik.http.routers.compass-docs.entrypoints=websecure"
+      - "traefik.http.routers.compass-docs.tls=true"
+      - "traefik.http.routers.compass-docs.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.compass-docs.priority=100"
+      - "traefik.http.routers.compass-docs.middlewares=docs-auth@file,security-headers@file,compression@file,rate-limit@file"
+      - "traefik.http.routers.compass-docs.service=compass"
+
+      # Внутренний порт FastAPI
+      - "traefik.http.services.compass.loadbalancer.server.port=8000"
+
+networks:
+  proxy:
+    external: true

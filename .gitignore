@@ -7,3 +7,12 @@ logs/
 .vscode/
 .idea/
 .DS_Store
+
+# Local backups
+*.bak
+*.backup
+*.old
+
+# Runtime and secrets
+backups/
+acme.json

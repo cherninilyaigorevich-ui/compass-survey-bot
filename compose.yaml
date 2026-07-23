@@ -1,12 +1,9 @@
 name: compass-survey-bot
 
 services:
-
   app:
     image: ${APP_IMAGE}
-
     container_name: compass-app
-
     restart: unless-stopped
 
     logging:
@@ -15,8 +12,8 @@ services:
         max-size: "10m"
         max-file: "3"
 
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
 
     deploy:
       resources:
@@ -46,13 +43,26 @@ services:
       retries: 3
       start_period: 10s
 
+    networks:
+      - default
+      - proxy
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      - "traefik.http.routers.compass.rule=Host(`compassbot.alisrv.com`)"
+      - "traefik.http.routers.compass.entrypoints=websecure"
+      - "traefik.http.routers.compass.tls=true"
+      - "traefik.http.routers.compass.tls.certresolver=letsencrypt"
+
+      - "traefik.http.routers.compass.middlewares=security-headers@file,compression@file,rate-limit@file"
+
+      - "traefik.http.services.compass.loadbalancer.server.port=8000"
 
   postgres:
-
     image: postgres:17
-
     container_name: compass-postgres
-
     restart: unless-stopped
 
     logging:
@@ -74,10 +84,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
 
     healthcheck:
       test:
@@ -89,7 +97,12 @@ services:
       timeout: 5s
       retries: 5
 
+    networks:
+      - default
 
 volumes:
-
   postgres_data:
+
+networks:
+  proxy:
+    external: true
