@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 import pytest
@@ -6,16 +5,11 @@ import pytest
 from app.database import get_engine
 from app.models.survey_answer import Base
 
-os.environ.setdefault("POSTGRES_DB", "compass_test")
-os.environ.setdefault("POSTGRES_USER", "compass_test")
-os.environ.setdefault("POSTGRES_PASSWORD", "test_password")
-os.environ.setdefault("POSTGRES_HOST", "localhost")
-os.environ.setdefault("POSTGRES_PORT", "5432")
 
-def pytest_sessionstart(session):
+def pytest_sessionstart(session: pytest.Session) -> None:
     """
-    Выполняется один раз перед запуском всех тестов.
-    Применяем миграции к тестовой БД.
+    Выполняется один раз перед запуском тестов.
+    Применяет миграции к базе данных.
     """
 
     subprocess.run(
