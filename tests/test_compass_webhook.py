@@ -13,7 +13,7 @@ def test_compass_webhook_accepts_json() -> None:
     }
 
     response = client.post(
-        "/compass/webhook",
+        "/api/compass/webhook",
         json=payload,
     )
 
