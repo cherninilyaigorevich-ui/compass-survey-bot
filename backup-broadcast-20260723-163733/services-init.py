@@ -13,10 +13,6 @@ from app.services.compass_client import (
     CompassRequestError,
     CompassSendResult,
 )
-from app.services.survey_broadcast import (
-    SurveyBroadcastResult,
-    SurveyBroadcastService,
-)
 from app.services.survey_service import (
     ActiveSurveyNotFoundError,
     SurveyNotFoundError,
@@ -35,8 +31,6 @@ __all__ = [
     "CompassConfigurationError",
     "CompassRequestError",
     "CompassSendResult",
-    "SurveyBroadcastResult",
-    "SurveyBroadcastService",
     "SurveyNotFoundError",
     "SurveyResult",
     "SurveyService",

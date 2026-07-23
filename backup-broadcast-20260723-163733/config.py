@@ -17,22 +17,6 @@ class Settings(BaseSettings):
     compass_api_base_url: str = (
         "https://userbot.getcompass.com/api/v3"
     )
-    compass_request_timeout_seconds: float = 15.0
-
-    survey_broadcast_enabled: bool = False
-    survey_broadcast_interval_minutes: int = 2
-    survey_broadcast_initial_delay_seconds: int = 10
-    survey_broadcast_survey_code: str = "location_check"
-    survey_broadcast_cancel_active: bool = True
-
-    # Если указан ID, рассылка выполняется только этому пользователю.
-    # Удалите параметр из .env после завершения тестирования.
-    survey_broadcast_only_user_id: int | None = None
-
-    # Уникальный ключ PostgreSQL advisory lock.
-    # Он предотвращает одновременный запуск рассылки
-    # несколькими экземплярами приложения.
-    survey_broadcast_lock_key: int = 741852963
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -1,0 +1,3 @@
+FROM ghcr.io/cherninilyaigorevich-ui/compass-survey-bot:6cfd6e1c6b6ba6844811f8c94edd93436d0f7013
+
+RUN pip install --no-cache-dir "APScheduler>=3.10,<4"

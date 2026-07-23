@@ -12,7 +12,6 @@ from app.api.health import router as health_router
 from app.config import settings
 from app.core.logging import setup_logging
 from app.database import get_session_factory
-from app.scheduler import scheduler_lifespan
 from app.services.survey_seed import seed_location_survey
 
 setup_logging()
@@ -56,8 +55,7 @@ async def lifespan(application: FastAPI):
             "Location survey seed failed"
         )
 
-    async with scheduler_lifespan():
-        yield
+    yield
 
     logger.info("%s stopped", settings.app_name)
 
