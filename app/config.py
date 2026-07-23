@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     postgres_host: str = "postgres"
     postgres_port: int = 5432
 
-    compass_bot_token: str
+    compass_bot_token: str | None = None
     compass_api_base_url: str = (
         "https://userbot.getcompass.com/api/v3"
     )
