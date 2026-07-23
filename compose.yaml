@@ -12,8 +12,8 @@ services:
         max-size: "10m"
         max-file: "3"
 
-    expose:
-      - "8000"
+    ports:
+      - "127.0.0.1:8000:8000"
 
     deploy:
       resources:
