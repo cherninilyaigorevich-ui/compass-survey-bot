@@ -122,13 +122,18 @@ class SurveyService:
                 self.sessions.complete(existing_session)
 
                 return SurveyResult(
-                    message=existing_session.survey.completion_message,
+                    message=(
+                        existing_session.survey.completion_message
+                    ),
                     completed=True,
                     session_id=existing_session.id,
                 )
 
             return SurveyResult(
-                message=self._format_question(question),
+                message=(
+                    "У вас уже есть незавершённый опрос.\n\n"
+                    f"{self._format_question(question)}"
+                ),
                 completed=False,
                 session_id=existing_session.id,
                 question_code=question.code,
@@ -172,7 +177,13 @@ class SurveyService:
             )
 
         return SurveyResult(
-            message=self._format_question(first_question),
+            message=(
+                "📋 Опрос рабочей локации\n\n"
+                "Ответьте на несколько вопросов.\n"
+                "Для ответа используйте команды, "
+                "начинающиеся с символа '/'.\n\n"
+                f"{self._format_question(first_question)}"
+            ),
             completed=False,
             session_id=session.id,
             question_code=first_question.code,
@@ -336,7 +347,23 @@ class SurveyService:
         if question.answer_type == "yes_no":
             return (
                 f"{question.text}\n\n"
-                "Ответьте: Да или Нет."
+                "Для ответа используйте одну из команд:\n\n"
+                "👉 /да\n"
+                "👉 /нет\n\n"
+                "⚠️ Важно: команда должна начинаться "
+                "с символа '/'."
+            )
+
+        if question.code == "new_location":
+            return (
+                f"{question.text}\n\n"
+                "Для ответа используйте команду:\n\n"
+                "👉 /location <ваша рабочая локация>\n\n"
+                "Примеры:\n"
+                "/location Санкт-Петербург\n"
+                "/location офис Омск\n\n"
+                "⚠️ Важно: команда должна начинаться "
+                "с символа '/'."
             )
 
         return question.text
